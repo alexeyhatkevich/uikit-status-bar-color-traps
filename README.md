@@ -11,6 +11,28 @@ in-app with `window.overrideUserInterfaceStyle`.
 | 2. Brightness | `CGColorGetComponents(color.CGColor)` read as r, g, b | `resolvedColorWithTraitCollection:view.traitCollection` + `getRed:green:blue:alpha:` |
 | 3. "No background" | `view.backgroundColor ?: fallback` | `nil` **or alpha == 0** uses the fallback |
 
+## How to run
+
+1. Open `Demo/Demo.xcodeproj` in Xcode (16 or newer). It uses this package as a local
+   Swift package, so there is nothing to install.
+2. Pick an iPhone simulator (iOS 17+) and press **⌘R**.
+3. Watch the clock and battery icons at the top while you switch
+   **Naive / Fixed**, the in-app appearance and the page background:
+   - **Black page** (trap 2): Naive measures black as 0.587 and draws dark text on black.
+   - **White page + Dark appearance** (trap 1): Naive returns `.default`, which follows
+     Dark mode, so the text is white on white.
+   - **Clear page** (trap 3): Naive keeps the transparent background instead of the blue
+     fallback, so the strip vanishes and the text can end up white on white.
+   - **Fixed**: readable in every combination. The on-screen readout shows the measured
+     brightness, the chosen style and a readable / UNREADABLE verdict.
+4. Press **⌘U** to run the package's XCTest suite (the `test_naive_*` tests pin the
+   bugs, the `test_fixed_*` tests pin the fixes).
+
+`swift test` on macOS does not work: the library and tests need UIKit, so they run only
+on an iOS simulator (via the Demo scheme, or `xcodebuild test` as shown below).
+`Demo/Demo.xcodeproj` is generated from `Demo/project.yml` with
+[XcodeGen](https://github.com/yonaskolb/XcodeGen) (`cd Demo && xcodegen generate`).
+
 ## Trap 1 - `UIStatusBarStyleDefault` is not "dark text"
 
 Since iOS 13 `UIStatusBarStyleDefault` means *automatic*: dark text in light

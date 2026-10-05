@@ -1,0 +1,55 @@
+name: Demo
+options:
+  bundleIdPrefix: com.alexeyhatkevich
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+packages:
+  StatusBarColorTraps:
+    path: ..
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: ""
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGNING_ALLOWED: "NO"
+    DEVELOPMENT_TEAM: ""
+targets:
+  Demo:
+    type: application
+    platform: iOS
+    sources:
+      - Demo
+    dependencies:
+      - package: StatusBarColorTraps
+        product: StatusBarColorTraps
+    info:
+      path: Demo/Info.plist
+      properties:
+        CFBundleDisplayName: Status Bar Traps
+        UILaunchScreen: {}
+        UIViewControllerBasedStatusBarAppearance: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexeyhatkevich.uikit-status-bar-color-traps.demo
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: "NO"
+schemes:
+  Demo:
+    build:
+      targets:
+        Demo: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - package: StatusBarColorTraps/StatusBarColorTrapsTests
