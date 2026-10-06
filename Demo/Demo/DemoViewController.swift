@@ -34,6 +34,7 @@ final class DemoViewController: UIViewController {
         implementationControl.selectedSegmentIndex = Implementation.naive.rawValue
         appearanceControl.selectedSegmentIndex = Appearance.system.rawValue
         backgroundControl.selectedSegmentIndex = PageBackground.black.rawValue
+        applyLaunchArguments()
         implementationControl.accessibilityIdentifier = "implementation"
         appearanceControl.accessibilityIdentifier = "appearance"
         backgroundControl.accessibilityIdentifier = "pageBackground"
@@ -127,6 +128,27 @@ final class DemoViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         controlChanged()
+    }
+
+    /// Launch arguments for scripted runs, e.g. `-mode fixed -appearance dark -background white`.
+    private func applyLaunchArguments() {
+        let defaults = UserDefaults.standard
+        if let mode = defaults.string(forKey: "mode")?.lowercased() {
+            implementationControl.selectedSegmentIndex = mode == "fixed" ? Implementation.fixed.rawValue
+                                                                         : Implementation.naive.rawValue
+        }
+        switch defaults.string(forKey: "appearance")?.lowercased() {
+        case "light": appearanceControl.selectedSegmentIndex = Appearance.light.rawValue
+        case "dark": appearanceControl.selectedSegmentIndex = Appearance.dark.rawValue
+        case "system": appearanceControl.selectedSegmentIndex = Appearance.system.rawValue
+        default: break
+        }
+        switch defaults.string(forKey: "background")?.lowercased() {
+        case "white": backgroundControl.selectedSegmentIndex = PageBackground.white.rawValue
+        case "black": backgroundControl.selectedSegmentIndex = PageBackground.black.rawValue
+        case "clear": backgroundControl.selectedSegmentIndex = PageBackground.clear.rawValue
+        default: break
+        }
     }
 
     private func caption(_ text: String) -> UILabel {

@@ -25,6 +25,10 @@ in-app with `window.overrideUserInterfaceStyle`.
      fallback, so the strip vanishes and the text can end up white on white.
    - **Fixed**: readable in every combination. The on-screen readout shows the measured
      brightness, the chosen style and a readable / UNREADABLE verdict.
+   - **Scripted run**: launch arguments `-mode naive|fixed`, `-appearance system|light|dark` and
+     `-background white|black|clear` preselect the three switches, e.g.
+     `xcrun simctl launch booted com.alexeyhatkevich.uikit-status-bar-color-traps.demo -mode naive -appearance dark -background white`.
+     In Xcode, add them under *Edit Scheme > Run > Arguments*.
 4. Press **⌘U** to run the package's XCTest suite (the `test_naive_*` tests pin the
    bugs, the `test_fixed_*` tests pin the fixes).
 
