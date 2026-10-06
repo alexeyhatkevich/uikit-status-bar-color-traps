@@ -18,6 +18,12 @@ final class DemoViewController: UIViewController {
     private let backgroundControl = UISegmentedControl(items: ["White", "Black", "Clear"])
     private let readoutLabel = UILabel()
     private let verdictLabel = UILabel()
+    /// Draws the text colour the app asked for on top of what is behind the status bar.
+    /// Newer iOS versions (26+) may adapt the real status bar to the content and hide the
+    /// traps, so this preview keeps them visible on any runtime.
+    private let previewBar = UIView()
+    private let previewTime = UILabel()
+    private let previewIcons = UIImageView()
 
     private var statusBarStyle: UIStatusBarStyle = .default
     override var preferredStatusBarStyle: UIStatusBarStyle { statusBarStyle }
@@ -69,12 +75,36 @@ final class DemoViewController: UIViewController {
         verdictLabel.font = .preferredFont(forTextStyle: .headline)
         verdictLabel.accessibilityIdentifier = "verdict"
 
+        previewBar.layer.cornerRadius = 10
+        previewBar.layer.borderWidth = 1
+        previewBar.layer.borderColor = UIColor.separator.cgColor
+        previewTime.text = "9:41"
+        previewTime.font = .systemFont(ofSize: 17, weight: .semibold)
+        previewIcons.image = UIImage(systemName: "wifi")?
+            .applyingSymbolConfiguration(.init(pointSize: 15, weight: .semibold))
+        let battery = UIImageView(image: UIImage(systemName: "battery.100")?
+            .applyingSymbolConfiguration(.init(pointSize: 17, weight: .regular)))
+        let previewRow = UIStackView(arrangedSubviews: [previewTime, UIView(), previewIcons, battery])
+        previewRow.spacing = 6
+        previewRow.alignment = .center
+        previewRow.translatesAutoresizingMaskIntoConstraints = false
+        previewBar.addSubview(previewRow)
+        previewBar.accessibilityIdentifier = "statusBarPreview"
+        NSLayoutConstraint.activate([
+            previewBar.heightAnchor.constraint(equalToConstant: 44),
+            previewRow.leadingAnchor.constraint(equalTo: previewBar.leadingAnchor, constant: 20),
+            previewRow.trailingAnchor.constraint(equalTo: previewBar.trailingAnchor, constant: -20),
+            previewRow.centerYAnchor.constraint(equalTo: previewBar.centerYAnchor),
+        ])
+
         let stack = UIStackView(arrangedSubviews: [
             title,
             caption("Implementation"), implementationControl,
             caption("In-app appearance (window.overrideUserInterfaceStyle)"), appearanceControl,
             caption("Page background"), backgroundControl,
-            verdictLabel, readoutLabel, help,
+            verdictLabel,
+            caption("Preview: requested text colour on what is behind it"), previewBar,
+            readoutLabel, help,
         ])
         stack.axis = .vertical
         stack.spacing = 8
@@ -212,6 +242,11 @@ final class DemoViewController: UIViewController {
         text drawn:     \(textIsDark ? "dark" : "light")
         behind text:    \(describe(onScreen)) (\(onScreenBrightness > 0.5 ? "light" : "dark"))
         """
+        let previewText: UIColor = textIsDark ? .black : .white
+        previewBar.backgroundColor = onScreen
+        previewTime.textColor = previewText
+        previewBar.subviews.first?.tintColor = previewText
+
         verdictLabel.text = readable ? "Status bar readable" : "Status bar UNREADABLE"
         verdictLabel.textColor = readable ? .systemGreen : .systemRed
     }

@@ -25,6 +25,9 @@ in-app with `window.overrideUserInterfaceStyle`.
      fallback, so the strip vanishes and the text can end up white on white.
    - **Fixed**: readable in every combination. The on-screen readout shows the measured
      brightness, the chosen style and a readable / UNREADABLE verdict.
+   - Newer iOS releases (26+) may adapt the real status bar to the content behind it and
+     hide the traps. The **Preview** row in the card draws the text colour the app asked for
+     on top of what is behind the status bar, so the traps stay visible on any runtime.
    - **Scripted run**: launch arguments `-mode naive|fixed`, `-appearance system|light|dark` and
      `-background white|black|clear` preselect the three switches, e.g.
      `xcrun simctl launch booted com.alexeyhatkevich.uikit-status-bar-color-traps.demo -mode naive -appearance dark -background white`.
